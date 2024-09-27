@@ -16,8 +16,11 @@ export default async function nuxtRedisCache(moduleOptions) {
 
   if (!options.enabled) return
 
-  console.log('\x1b[34m%s\x1b[0m', '[Nuxt SSR Redis Cache]: Connecting to Redis...')
+  const version = options.version ? options.version + '::' : ''
+  console.log('\x1b[34m%s\x1b[0m', '[Nuxt SSR Redis Cache]: Version: ' + version)
 
+
+  console.log('\x1b[34m%s\x1b[0m', '[Nuxt SSR Redis Cache]: Connecting to Redis...')
   try {
     await client.connect()
   } catch (error) {
@@ -54,7 +57,7 @@ export default async function nuxtRedisCache(moduleOptions) {
       let value
 
       try {
-        value = await client.get('nuxt/route::' + route)
+        value = await client.get(version + 'nuxt/route::' + route)
       } catch (error) {
         console.log(error)
       }
@@ -73,7 +76,7 @@ export default async function nuxtRedisCache(moduleOptions) {
 
   this.nuxt.hook('render:route', async (url, result, context) => {
     if (!context.req.hitCache && isCacheable(url, options.paths, context.req.headers['cache-control'])) {
-      client.set('nuxt/route::' + url, serialize(result), {
+      client.set(version + 'nuxt/route::' + url, serialize(result), {
         EX: options.ttl,
       })
     }
@@ -90,6 +93,7 @@ function buildOptions(moduleOptions) {
       },
       password: null,
     },
+    version: "",
     ttl: 60 * 60,
     paths: [],
     cacheCleanEndpoint: {

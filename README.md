@@ -31,6 +31,7 @@ modules: [
         },
         paths: [/^\/$/, '/articles/'], // If empty or "/" is set, all pages will be cached
         ttl: 60 * 60, // 1 hour
+        version: "", // If you want to invalidate all cache, change the version  
         cacheCleanEndpoint: {
           enabled: false, 
           path: '/ssr-redis-cache',
@@ -56,6 +57,7 @@ Alternatively, you can set it up as follows:
     },
     paths: [/^\/$/, '/articles/'], // If empty or "/", is set all pages will be cached
     ttl: 60 * 60, // 1 hour
+    version: "", // If you want to invalidate all cache, change the version
     cacheCleanEndpoint: {
       enabled: true, 
       path: '/ssr-redis-cache',
